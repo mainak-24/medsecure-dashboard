@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MedSecure | Federated Node Dashboard</title>
+  <style>
+    :root {
+      --med-blue: #005bb7;
+      --med-green: #28a745;
+      --bg-gradient: linear-gradient(135deg, #e0f7fa, #f4f7f6);
+      --dark-bg: #1e1e1e;
+      --dark-card: rgba(40,40,40,0.85);
+      --dark-text: #f4f4f4;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    header {
+      text-align: center;
+      padding: 30px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      transition: background 0.5s;
+    }
+    body.dark header {
+      background: var(--dark-card);
+    }
+
+    header h1 {
+      color: var(--med-blue);
+      font-size: 2.2rem;
+      margin: 0;
+    }
+
+    .dashboard {
+      max-width: 1100px;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(15px);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s, background 0.5s, color 0.5s;
+    }
+    body.dark .card {
+      background: var(--dark-card);
+      color: var(--dark-text);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: #d4edda;
+      color: #155724;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    /* Buttons */
+    button {
+      background: linear-gradient(135deg, #005bb7, #28a745);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .extra-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    body.dark footer {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>MEDCARE: Healthcare Node</h1>
+  <span class="status-badge">● Federated Node Active</span>
+  <div class="extra-buttons">
+    <button onclick="openAbout()">About</button>
+    <button onclick="redirectPhishingChecker()">Phishing Link Checker</button>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  </div>
+</header>
+
+<div class="dashboard">
+  <!-- Local Dataset Protection -->
+  <div class="card">
+    <h3>Local Dataset Protection</h3>
+    <p>Analyze local Electronic Health Records (EHR) for phishing-driven anomalies.</p>
+
+    <div style="border: 2px dashed #ccc; padding: 30px; text-align: center; border-radius: 10px;">
+      <input type="file" id="datasetInput" style="display:none">
+      <label for="datasetInput" style="cursor:pointer">
+        <strong>Click to load local Medical Dataset (CSV/JSON)</strong><br>
+        <small>EHR, IoMT Logs, or Medical Demographics</small>
+      </label>
+    </div>
+
+    <div class="privacy-alert">
+      🛡️ <strong>Privacy Preservation:</strong> Raw patient data stays localized. Only encrypted model updates are shared with the Global Model.
+    </div>
+
+    <div id="analysisSection" style="display:none; margin-top:30px;">
+      <h4>Analyzing Target Features </h4>
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Weight</th><th>Risk Correlation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Age / Work Type</td><td>High</td><td>Patient Targeting Pattern</td></tr>
+          <tr><td>Hypertension History</td><td>Medium</td><td>Record Integrity</td></tr>
+          <tr><td>Heart Disease Metric</td><td>Medium</td><td>IoMT Data Consistency</td></tr>
+        </tbody>
+      </table>
+
+      <div class="progress-container"><div id="progressBar"></div></div>
+      <button id="trainBtn" onclick="runFederatedTraining()">Begin Local Training & Sync</button>
+    </div>
+  </div>
+
+  <!-- Global Intelligence -->
+  <div class="card">
+    <h3>Global Intelligence</h3>
+    <div style="text-align: center; padding: 20px 0;">
+      <h1 style="font-size: 3rem; margin: 0; color: var(--med-green);">94.86%</h1>
+      <p style="margin: 0; color: #666;">Global Model Accuracy </p>
+    </div>
+    <hr>
+    <h4>Collaborative Updates</h4>
+    <ul style="font-size: 0.85rem; padding-left: 20px; line-height: 1.8;">
+      <li><strong>Node 04:</strong> Sync complete (2m ago)</li>
+      <li><strong>Node 12:</strong> Aggregation successful</li>
+      <li><strong>Security Audit:</strong> HIPAA Compliant</li>
+    </ul>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="card">
+    <h3>System Quick Stats</h3>
+    <ul>
+      <li>Active Nodes: 15</li>
+      <li>Pending Updates: 3</li>
+      <li>Last Sync: 5 minutes ago</li>
+      <li>Threat Alerts: None</li>
+    </ul>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div id="overlay"></div>
+<div id="aboutTab">
+  <h3>About MedSecure</h3>
+  <p>MedSecure enables hospitals to collaborate securely using federated learning. Patient data never leaves the local node — only encrypted model updates are shared globally. This ensures HIPAA compliance and robust protection against phishing-driven anomalies.</p>
+  <button onclick="closeAbout()">Close</button>
+</div>
+
+<footer>
+  <p>© 2026 MedSecure | Contact: support@medsecure.com</p>
+</footer>
+
+<script>
+  const fileInput = document.getElementById('datasetInput');
+  const analysisSection = document.getElementById('analysisSection');
+  const progressBar = document.getElementById('progressBar');
+  const trainBtn = document.getElementById('trainBtn');
+
+  fileInput.onchange = () => {
+    analysisSection.style.display = 'block';
+  };
+
+  function runFederatedTraining() {
+    trainBtn.disabled = true;
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      progressBar.style.width = progress + '%';
+      if (progress === 30) trainBtn.innerText = "Preprocessing Records...";
+      if (progress === 60) trainBtn.innerText = "Local Training (FL Node)...";
+      if (progress === 90) trainBtn.innerText = "Encrypting Model Updates...";
+      if (progress >= 100)Perfect — let’s make this dashboard feel like a **real security platform**. I’ve added several enhancements that improve usability, professionalism, and interactivity:
+z
+- **Phishing Link Checker** button (redirects to Google Safe Browsing).
+- **Dark Mode Toggle** for accessibility and modern feel.
+- **Quick Stats Panel** showing system health at a glance.
+- **Footer with contact info** for professionalism.
+- Smooth transitions and hover effects for a polished experience.
+
+Here’s the **full rewritten code** with all these features integrated:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MedSecure | Federated Node Dashboard</title>
+  <style>
+    :root {
+      --med-blue: #005bb7;
+      --med-green: #28a745;
+      --bg-gradient: linear-gradient(135deg, #e0f7fa, #f4f7f6);
+      --dark-bg: #1e1e1e;
+      --dark-card: rgba(40,40,40,0.85);
+      --dark-text: #f4f4f4;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    header {
+      text-align: center;
+      padding: 30px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      transition: background 0.5s;
+    }
+    body.dark header {
+      background: var(--dark-card);
+    }
+
+    header h1 {
+      color: var(--med-blue);
+      font-size: 2.2rem;
+      margin: 0;
+    }
+
+    .dashboard {
+      max-width: 1100px;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(15px);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s, background 0.5s, color 0.5s;
+    }
+    body.dark .card {
+      background: var(--dark-card);
+      color: var(--dark-text);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: #d4edda;
+      color: #155724;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    /* Buttons */
+    button {
+      background: linear-gradient(135deg, #005bb7, #28a745);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .extra-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    body.dark footer {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
